@@ -16,7 +16,7 @@ const Login = () => {
       <TextInput
         style={styles.input}
         onChangeText={setOneTimePassword}
-        value={oenTimePassword}
+        value={oneTimePassword}
         placeholder="1234"
         keyboardType="numeric"
         secureTextEntry={true}
