@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, Image } from 'react-native';
 
-function AppName() {
+function AppName(props) {
     return (
       <View style={styles.appName}>
         <Text style={styles.text}>STEDI Balance</Text>
