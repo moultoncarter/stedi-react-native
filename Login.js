@@ -1,7 +1,34 @@
 import {useState} from "react";
 import { SafeAreaView, StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
 
-const Login = () => {
+const sendText= async (phoneNumber)=>{
+  console.log("PhoneNumber: ", phoneNumber);
+  await fetch("https://dev.stedi.me/twofactorlogin/"+phoneNumber,{
+    method: "POST",
+    headers: {
+      "content-type":"application/text"
+    }
+  });
+}
+
+const getToken = async ({phoneNumber, oneTimePassword, setUserLoggedIn}) =>{
+  const tokenResponse = await fetch("https://dev.stedi.me/twofactorlogin",{
+    method: "POST",
+    body:JSON.stringify({oneTimePassword, phoneNumber}),
+    headers: {
+      "content-type":"application/json"
+    }
+  });
+const responseCode = tokenResponse.status;
+console.log("Response Status Code", responseCode)
+if (responseCode==200){
+  setUserLoggedIn(true);
+}
+
+  const tokenResponseString = await tokenResponse.text();
+  console.log(tokenResponseString);
+}
+const Login = (props) => {
   const [phoneNumber, setPhonenumber] = useState("");
   const [oneTimePassword, setOneTimePassword] = useState(null);
 
@@ -14,6 +41,12 @@ const Login = () => {
         placeholder="111-2222-3333"
         placeholderTextColor="#4251f5"
       />
+      <TouchableOpacity
+      style={styles.button}
+      onPress={()=>sendText(phoneNumber)}
+      >
+        <Text>Send Text</Text>
+      </TouchableOpacity>
       <TextInput
         style={styles.input}
         onChangeText={setOneTimePassword}
@@ -25,9 +58,11 @@ const Login = () => {
       />
       <TouchableOpacity
       style={styles.button}
-      onPress={()=>console.log("Login button was clicked")}
+      onPress={()=>{
+        getToken({phoneNumber, oneTimePassword, setUserLoggedIn:props.setUserLoggedIn});
+      }}
       >
-        <Text>Press Here</Text>
+        <Text>Login</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
